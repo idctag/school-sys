@@ -3,6 +3,7 @@ import {
   Book,
   Calendar,
   Component,
+  LogOut,
   Notebook,
   SquareTerminal,
   University,
@@ -20,6 +21,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
 
 const items = {
   dashboard: [
@@ -105,7 +108,17 @@ export function AppSidebar() {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <Button variant="ghost" className="w-full ">
+              Sign out
+              <Separator orientation="vertical" />
+              <LogOut />
+            </Button>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
