@@ -23,6 +23,7 @@ import {
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
+import { SignedIn, SignOutButton } from "@clerk/nextjs";
 
 const items = {
   dashboard: [
@@ -111,11 +112,18 @@ export function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <Button variant="ghost" className="w-full ">
-              Sign out
-              <Separator orientation="vertical" />
-              <LogOut />
-            </Button>
+            <SignedIn>
+              <SignOutButton>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-center text-red-500"
+                >
+                  Log Out
+                  <Separator orientation="vertical" className="mx-3" />
+                  <LogOut />
+                </Button>
+              </SignOutButton>
+            </SignedIn>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

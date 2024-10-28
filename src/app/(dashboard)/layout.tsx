@@ -1,9 +1,9 @@
-import { Separator } from "@/components/ui/separator";
-import NavBar from "./_components/NavBar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import NavBar from "./_components/NavBar";
+import { Separator } from "@/components/ui/separator";
 
-export default function RootLayout({
+export default function DashbBoardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
