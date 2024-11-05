@@ -1,5 +1,5 @@
 "use client";
-import { Book, Calendar, Component, LogOut, University } from "lucide-react";
+import { Book, Calendar, Component, University } from "lucide-react";
 
 import {
   Sidebar,
@@ -13,9 +13,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { Button } from "./ui/button";
-import { Separator } from "./ui/separator";
-import { SignedIn, SignOutButton, useUser } from "@clerk/nextjs";
+import { SignOut } from "./signout-button";
+import { useSession } from "next-auth/react";
 
 const items = {
   academic: [
@@ -38,14 +37,14 @@ const items = {
 };
 
 export function AppSidebar() {
-  const { user } = useUser();
+  const { data: session } = useSession();
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="flex">
         <SidebarMenu>
           <SidebarMenuItem className="flex">
             <SidebarMenuButton asChild>
-              <Link href={`/${user?.publicMetadata.role}`}>
+              <Link href={`/${session?.user.role}`}>
                 <University />
                 <span>School System</span>
               </Link>
@@ -73,18 +72,7 @@ export function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SignedIn>
-              <SignOutButton>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-center text-red-500"
-                >
-                  Log Out
-                  <Separator orientation="vertical" className="mx-3" />
-                  <LogOut />
-                </Button>
-              </SignOutButton>
-            </SignedIn>
+            <SignOut />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

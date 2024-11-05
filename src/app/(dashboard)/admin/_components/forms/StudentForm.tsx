@@ -10,7 +10,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createStudent } from "@/server/db/students";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -29,7 +28,7 @@ export const StudentForm = () => {
     },
   });
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createStudent(values);
+    console.log(values);
   }
 
   return (

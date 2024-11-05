@@ -1,12 +1,10 @@
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
-import { getStudents } from "@/server/actions/students";
 
-const StudentList = async () => {
-  const students = await getStudents();
+const StudentList = () => {
   return (
     <div>
-      <DataTable columns={columns} data={students} />
+      <DataTable columns={columns} data={[]} />
     </div>
   );
 };
