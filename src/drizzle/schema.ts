@@ -18,6 +18,11 @@ export const users = pgTable("user", {
   image: text("image"),
 });
 
+export const students = pgTable("student", {
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+});
 export const accounts = pgTable(
   "account",
   {
