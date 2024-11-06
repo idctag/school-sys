@@ -10,31 +10,24 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { db } from "@/drizzle/db";
-import { students, users } from "@/drizzle/schema";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { createStudent } from "@/drizzle/actions/student";
+import { studentSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const formSchema = z.object({
-  email: z.string().min(2).email().max(50),
-  name: z.string().min(1),
-});
-
 export const StudentForm = () => {
-  const adapter = DrizzleAdapter(db);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof studentSchema>>({
+    resolver: zodResolver(studentSchema),
     defaultValues: {
       email: "",
       name: "",
+      lastName: "",
     },
   });
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const user = await db.insert(users).values(values);
-
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof studentSchema>) {
+    const student = await createStudent(values);
+    console.log(student);
   }
 
   return (
@@ -51,6 +44,19 @@ export const StudentForm = () => {
               <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input placeholder="name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="lastName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Last Name</FormLabel>
+              <FormControl>
+                <Input placeholder="last name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

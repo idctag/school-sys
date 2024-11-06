@@ -1,10 +1,12 @@
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
+import { getStudents } from "@/drizzle/actions/student";
 
-const StudentList = () => {
+const StudentList = async () => {
+  const students = await getStudents();
   return (
     <div>
-      <DataTable columns={columns} data={[]} />
+      <DataTable columns={columns} data={students} />
     </div>
   );
 };

@@ -9,6 +9,9 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: DrizzleAdapter(db),
+  pages: {
+    error: "/api/auth/error",
+  },
   providers: [
     Google({
       profile(profile) {
