@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createStudent } from "@/drizzle/actions/student";
+import { createStudent } from "@/db/actions/student";
 import { studentSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef } from "react";
