@@ -4,6 +4,7 @@ import { db } from "../db";
 import { students, users } from "../schema";
 import { z } from "zod";
 import { studentSchema } from "@/schemas";
+import { revalidatePath } from "next/cache";
 
 export const createStudent = async (values: z.infer<typeof studentSchema>) => {
   console.log(values);
@@ -16,10 +17,12 @@ export const createStudent = async (values: z.infer<typeof studentSchema>) => {
   )[0];
   const student = await db.insert(students).values({
     userId: user.id,
+    classId: null,
   });
   if (!student) {
     await db.delete(users).where(eq(users.email, values.email));
   }
+  revalidatePath("/");
   return JSON.stringify(student);
 };
 
@@ -30,5 +33,6 @@ export const getStudents = async () => {
 
 export const deleteUser = async (id: string) => {
   const student = await db.delete(users).where(eq(users.id, id));
+  revalidatePath("/");
   return JSON.stringify(student);
 };

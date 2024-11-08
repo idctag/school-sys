@@ -13,7 +13,6 @@ import { deleteUser } from "@/drizzle/actions/student";
 import { users } from "@/drizzle/schema";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-
 export const columns: ColumnDef<typeof users.$inferSelect>[] = [
   {
     accessorKey: "name",

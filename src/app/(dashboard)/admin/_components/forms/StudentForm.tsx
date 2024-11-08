@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { createStudent } from "@/drizzle/actions/student";
 import { studentSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -26,13 +27,16 @@ export const StudentForm = () => {
     },
   });
   async function onSubmit(values: z.infer<typeof studentSchema>) {
+    ref.current?.reset();
     const student = await createStudent(values);
     console.log(student);
   }
+  const ref = useRef<HTMLFormElement>(null);
 
   return (
     <Form {...form}>
       <form
+        ref={ref}
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-6"
       >
