@@ -1,6 +1,6 @@
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
-import { getStudents } from "@/drizzle/actions/student";
+import { getStudents } from "@/db/actions/student";
 
 const StudentList = async () => {
   const students = await getStudents();

@@ -4,5 +4,5 @@
 4. [x] Role based protection.
 5. [x] Admin dashboard page, list of all users.
 6. [x] Student update form
-7. [ ] Finalize schema
+7. [x] Finalize schema
 8. [ ] ref, action pending state

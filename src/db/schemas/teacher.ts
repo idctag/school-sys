@@ -1,22 +1,20 @@
-import { pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import lessons from "./lesson";
-import classes from "./class";
 import users from "./user";
+import classes from "./class";
 
 const teachers = pgTable("teacher", {
-  id: uuid("id").defaultRandom().primaryKey(),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   userId: text("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  classId: text("classId"),
 });
 
 export const teacherRelations = relations(teachers, ({ one, many }) => ({
-  class: one(classes, {
-    fields: [teachers.classId],
-    references: [classes.id],
-  }),
+  class: one(classes),
   lessons: many(lessons),
 }));
 

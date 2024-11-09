@@ -9,8 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteUser } from "@/drizzle/actions/student";
-import { users } from "@/drizzle/schema";
+import { deleteUser } from "@/db/actions/student";
+import users from "@/db/schemas/user";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 export const columns: ColumnDef<typeof users.$inferSelect>[] = [

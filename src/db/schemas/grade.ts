@@ -1,14 +1,16 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text } from "drizzle-orm/pg-core";
 import students from "./student";
 import lessons from "./lesson";
 
 const grades = pgTable("grade", {
-  id: uuid("id").defaultRandom().primaryKey(),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
   score: text("score"),
-  lessonId: text("lessonId"),
-  studentId: text("studentId"),
+  lessonId: text("lessonId").references(() => lessons.id),
+  studentId: text("studentId").references(() => students.id),
 });
 
 export const gradeRelations = relations(grades, ({ one }) => ({

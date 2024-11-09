@@ -6,16 +6,14 @@ import lessons from "./lesson";
 const studentsToLessons = pgTable(
   "students_to_lessons",
   {
-    studentId: text("student_id")
+    studentId: text("studentId")
       .notNull()
       .references(() => students.id),
-    lessonId: text("lesson_id")
+    lessonId: text("lessonId")
       .notNull()
       .references(() => lessons.id),
   },
-  (t) => ({
-    pk: primaryKey({ columns: [t.lessonId, t.studentId] }),
-  }),
+  (t) => [{ pk: primaryKey({ columns: [t.lessonId, t.studentId] }) }],
 );
 
 export const studentsToLessonsRelations = relations(

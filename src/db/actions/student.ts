@@ -1,29 +1,42 @@
 "use server";
 import { eq } from "drizzle-orm";
-import { db } from "../db";
-import { students, users } from "../schema";
 import { z } from "zod";
 import { studentSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
+import users from "../schemas/user";
+import students from "../schemas/student";
+import { db } from "..";
 
 export const createStudent = async (values: z.infer<typeof studentSchema>) => {
   console.log(values);
-  const newUser = await db.insert(users).values({ ...values, role: "student" });
+  const newUser = await db
+    .insert(users)
+    .values({ ...values, role: "student" })
+    .returning();
   if (!newUser) {
     throw new Error("failed to create user");
   }
-  const user = (
-    await db.select().from(users).where(eq(users.email, values.email))
-  )[0];
-  const student = await db.insert(students).values({
-    userId: user.id,
-    classId: null,
-  });
-  if (!student) {
-    await db.delete(users).where(eq(users.email, values.email));
+
+  console.log(newUser[0]);
+
+  try {
+    await db.insert(students).values({
+      userId: newUser[0].id,
+      classId: null,
+    });
+  } catch (e) {
+    await db.delete(users).where(eq(users.id, newUser[0].id));
+    return {
+      error: e,
+    };
   }
+  const student = db
+    .select()
+    .from(students)
+    .where(eq(students.userId, newUser[0].id));
+
   revalidatePath("/");
-  return JSON.stringify(student);
+  return student;
 };
 
 export const getStudents = async () => {

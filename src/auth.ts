@@ -1,9 +1,9 @@
 import NextAuth from "next-auth";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import Google from "next-auth/providers/google";
-import { db } from "./drizzle/db";
-import { users } from "./drizzle/schema";
 import { eq } from "drizzle-orm";
+import { db } from "./db";
+import users from "./db/schemas/user";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 

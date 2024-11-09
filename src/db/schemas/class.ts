@@ -1,12 +1,14 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text } from "drizzle-orm/pg-core";
 import students from "./student";
 import teachers from "./teacher";
 
 const classes = pgTable("class", {
-  id: uuid("id").defaultRandom().primaryKey(),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
-  teacherId: text("teacherId"),
+  teacherId: text("teacherId").references(() => teachers.id),
 });
 
 export const classRelations = relations(classes, ({ many, one }) => ({
