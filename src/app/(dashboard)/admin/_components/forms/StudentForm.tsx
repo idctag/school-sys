@@ -13,7 +13,8 @@ import { Input } from "@/components/ui/input";
 import { createStudent } from "@/db/actions/student";
 import { studentSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRef } from "react";
+import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -27,16 +28,20 @@ export const StudentForm = () => {
     },
   });
   async function onSubmit(values: z.infer<typeof studentSchema>) {
-    ref.current?.reset();
-    const student = await createStudent(values);
-    console.log(student);
+    await createStudent(values);
   }
-  const ref = useRef<HTMLFormElement>(null);
+
+  const { isDirty, isValid, isSubmitting } = form.formState;
+
+  useEffect(() => {
+    if (form.formState.isSubmitSuccessful) {
+      form.reset();
+    }
+  }, [form.formState, form.reset, form]);
 
   return (
     <Form {...form}>
       <form
-        ref={ref}
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-6"
       >
@@ -79,7 +84,9 @@ export const StudentForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Add</Button>
+        <Button disabled={isSubmitting || !isValid || !isDirty} type="submit">
+          {isSubmitting ? <Loader2 className="animate-spin" /> : <>Add</>}
+        </Button>
       </form>
     </Form>
   );

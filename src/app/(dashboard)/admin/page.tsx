@@ -15,6 +15,7 @@ import { StudentForm } from "./_components/forms/StudentForm";
 import React from "react";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { TeacherForm } from "./_components/forms/TeacherForm";
 
 const AdminDashboard = async () => {
   const session = await auth();
@@ -60,7 +61,9 @@ const AdminDashboard = async () => {
           <TabsContent value="student">
             <StudentForm />
           </TabsContent>
-          <TabsContent value="teacher">{/* <TeacherForm /> */}</TabsContent>
+          <TabsContent value="teacher">
+            <TeacherForm />
+          </TabsContent>
         </Tabs>
       </DialogContent>
     </Dialog>

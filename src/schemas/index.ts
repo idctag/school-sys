@@ -5,3 +5,8 @@ export const studentSchema = z.object({
   name: z.string().min(1),
   lastName: z.string().min(1),
 });
+export const teacherSchema = z.object({
+  email: z.string().min(2).email().max(50),
+  name: z.string().min(1),
+  lastName: z.string().min(1),
+});

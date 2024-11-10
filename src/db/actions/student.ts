@@ -8,7 +8,6 @@ import students from "../schemas/student";
 import { db } from "..";
 
 export const createStudent = async (values: z.infer<typeof studentSchema>) => {
-  console.log(values);
   const newUser = await db
     .insert(users)
     .values({ ...values, role: "student" })
