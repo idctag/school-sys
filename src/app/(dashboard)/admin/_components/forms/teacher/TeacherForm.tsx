@@ -10,24 +10,33 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createTeacher } from "@/db/actions/teachers";
-import { teacherSchema } from "@/schemas";
+import { createTeacher } from "@/db/actions/teacher";
+import teachers from "@/db/schemas/teacher";
+import users from "@/db/schemas/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+const formSchema = z.object({
+  name: z.string().min(2),
+  lastName: z.string().min(2),
+  email: z.string().email(),
+});
+
+type insertTeacherType = typeof teachers.$inferInsert &
+  typeof users.$inferInsert;
 export const TeacherForm = () => {
-  const form = useForm<z.infer<typeof teacherSchema>>({
-    resolver: zodResolver(teacherSchema),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       name: "",
       lastName: "",
     },
   });
-  async function onSubmit(values: z.infer<typeof teacherSchema>) {
+  async function onSubmit(values: insertTeacherType) {
     await createTeacher(values);
   }
 

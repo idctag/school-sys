@@ -1,14 +1,14 @@
 "use server";
 
-import { teacherSchema } from "@/schemas";
 import { db } from "..";
-import users from "../schemas/user";
-import { z } from "zod";
-import { teacher } from "../schemas";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import users from "../schema/user";
+import teachers from "../schema/teacher";
 
-export const createTeacher = async (values: z.infer<typeof teacherSchema>) => {
+export const createTeacher = async (
+  values: typeof users.$inferInsert & typeof teachers.$inferInsert,
+) => {
   const newUser = await db
     .insert(users)
     .values({ ...values, role: "teacher" })
@@ -17,10 +17,8 @@ export const createTeacher = async (values: z.infer<typeof teacherSchema>) => {
     throw new Error("failed to create user");
   }
 
-  console.log(newUser[0]);
-
   try {
-    await db.insert(teacher).values({
+    await db.insert(teachers).values({
       userId: newUser[0].id,
     });
   } catch (e) {
@@ -31,8 +29,8 @@ export const createTeacher = async (values: z.infer<typeof teacherSchema>) => {
   }
   const student = db
     .select()
-    .from(teacher)
-    .where(eq(teacher.userId, newUser[0].id));
+    .from(teachers)
+    .where(eq(teachers.userId, newUser[0].id));
 
   revalidatePath("/");
   return student;

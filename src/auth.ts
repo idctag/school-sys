@@ -3,9 +3,9 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import Google from "next-auth/providers/google";
 import { eq } from "drizzle-orm";
 import { db } from "./db";
-import users from "./db/schemas/user";
+import users from "./db/schema/user";
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL!;
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: DrizzleAdapter(db),

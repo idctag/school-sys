@@ -1,50 +1,60 @@
 "use server";
 import { eq } from "drizzle-orm";
-import { z } from "zod";
-import { studentSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
-import users from "../schemas/user";
-import students from "../schemas/student";
 import { db } from "..";
+import { createUser } from "./user";
+import students from "../schema/student";
+import users from "../schema/user";
 
-export const createStudent = async (values: z.infer<typeof studentSchema>) => {
-  const newUser = await db
-    .insert(users)
-    .values({ ...values, role: "student" })
-    .returning();
-  if (!newUser) {
-    throw new Error("failed to create user");
-  }
-
-  console.log(newUser[0]);
+export const createStudent = async (
+  values: Omit<typeof students.$inferInsert, "userId"> &
+    typeof users.$inferInsert,
+) => {
+  const newUser = await createUser({ ...values, role: "student" });
 
   try {
     await db.insert(students).values({
-      userId: newUser[0].id,
-      classId: null,
+      ...values,
+      userId: newUser.id,
     });
   } catch (e) {
-    await db.delete(users).where(eq(users.id, newUser[0].id));
+    await db.delete(users).where(eq(users.id, newUser.id));
     return {
       error: e,
     };
   }
-  const student = db
-    .select()
-    .from(students)
-    .where(eq(students.userId, newUser[0].id));
 
   revalidatePath("/");
-  return student;
 };
 
 export const getStudents = async () => {
-  const data = await db.select().from(users).where(eq(users.role, "student"));
+  const data = await db.query.student.findMany({ with: { user: true } });
   return data;
 };
 
-export const deleteUser = async (id: string) => {
-  const student = await db.delete(users).where(eq(users.id, id));
-  revalidatePath("/");
-  return JSON.stringify(student);
+export const getStudent = async (id: string) => {
+  const data = await db.query.student.findFirst({
+    where: eq(students.id, id),
+    with: { user: true },
+  });
+  return data;
 };
+
+// export const updateStudent = async (
+//   id: string,
+//   values: z.infer<typeof studentSchema>,
+// ) => {
+//   const student = await db.select().from(students).where(eq(students.id, id));
+//   const user = await db
+//     .select()
+//     .from(users)
+//     .where(eq(users.id, student[0].userId));
+//   try {
+//     await db.update(users).set(values).where(eq(users.id, user[0].id));
+//   } catch (e) {
+//     return {
+//       error: e,
+//     };
+//   }
+//   revalidatePath("/");
+// };

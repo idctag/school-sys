@@ -11,11 +11,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { StudentForm } from "./_components/forms/StudentForm";
 import React from "react";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { TeacherForm } from "./_components/forms/TeacherForm";
+import { StudentForm } from "./_components/forms/student/StudentForm";
+import { TeacherForm } from "./_components/forms/teacher/TeacherForm";
 
 const AdminDashboard = async () => {
   const session = await auth();

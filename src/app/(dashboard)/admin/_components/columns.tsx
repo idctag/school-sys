@@ -2,6 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -9,21 +16,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteUser } from "@/db/actions/student";
-import users from "@/db/schemas/user";
+import { deleteUser } from "@/db/actions/user";
+import students from "@/db/schema/student";
+import users from "@/db/schema/user";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-export const studentColumns: ColumnDef<typeof users.$inferSelect>[] = [
+export const studentColumns: ColumnDef<typeof students.$inferSelect>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "users.name",
     header: "Name",
   },
   {
-    accessorKey: "lastName",
+    accessorKey: "users.lastName",
     header: "Last Name",
   },
   {
-    accessorKey: "email",
+    accessorKey: "users.email",
     header: "Email",
   },
   {
@@ -35,25 +43,34 @@ export const studentColumns: ColumnDef<typeof users.$inferSelect>[] = [
     cell: ({ row }) => {
       const student = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-red-500"
-              onClick={() => deleteUser(student.id)}
-            >
-              delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Dialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DialogTrigger>
+                <DropdownMenuItem>Edit</DropdownMenuItem>
+              </DialogTrigger>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-red-500"
+                onClick={() => deleteUser(student.userId)}
+              >
+                delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DialogContent>
+            <DialogHeader>Update Student</DialogHeader>
+            <DialogDescription></DialogDescription>
+            {/* <EditStudentForm /> */}
+          </DialogContent>
+        </Dialog>
       );
     },
   },

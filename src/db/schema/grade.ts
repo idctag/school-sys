@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { pgTable, text } from "drizzle-orm/pg-core";
-import students from "./student";
 import lessons from "./lesson";
+import students from "./student";
 
 const grades = pgTable("grade", {
   id: text("id")

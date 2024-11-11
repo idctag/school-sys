@@ -11,23 +11,33 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createStudent } from "@/db/actions/student";
-import { studentSchema } from "@/schemas";
+import students from "@/db/schema/student";
+import users from "@/db/schema/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+const formSchema = z.object({
+  name: z.string().min(2),
+  lastName: z.string().min(2),
+  email: z.string().email(),
+});
+
+type insertStudentType = Omit<typeof students.$inferInsert, "userId"> &
+  typeof users.$inferInsert;
+
 export const StudentForm = () => {
-  const form = useForm<z.infer<typeof studentSchema>>({
-    resolver: zodResolver(studentSchema),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       name: "",
       lastName: "",
     },
   });
-  async function onSubmit(values: z.infer<typeof studentSchema>) {
+  async function onSubmit(values: insertStudentType) {
     await createStudent(values);
   }
 

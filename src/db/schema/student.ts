@@ -10,22 +10,23 @@ const students = pgTable("student", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   userId: text("userId")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => users.id, { onDelete: "cascade" })
+    .unique()
+    .notNull(),
   classId: text("classId").references(() => classes.id),
 });
 
 export const studentRelations = relations(students, ({ one, many }) => ({
+  user: one(users, {
+    fields: [students.userId],
+    references: [users.id],
+  }),
   class: one(classes, {
     fields: [students.classId],
     references: [classes.id],
   }),
   studentsToLessons: many(studentsToLessons),
   grades: many(grades),
-  user: one(users, {
-    fields: [students.userId],
-    references: [users.id],
-  }),
 }));
 
 export default students;
