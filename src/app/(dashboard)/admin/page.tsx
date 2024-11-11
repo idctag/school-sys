@@ -1,6 +1,4 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import StudentList from "./_components/StudentList";
-import TeacherList from "./_components/TeacherList";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import {
@@ -14,8 +12,9 @@ import { DialogTitle } from "@radix-ui/react-dialog";
 import React from "react";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { StudentForm } from "./_components/forms/student/StudentForm";
-import { TeacherForm } from "./_components/forms/teacher/TeacherForm";
+import { StudentForm } from "../_components/forms/student/StudentForm";
+import { TeacherForm } from "../_components/forms/teacher/TeacherForm";
+import { StudentList, TeacherList } from "./_components/tables";
 
 const AdminDashboard = async () => {
   const session = await auth();
