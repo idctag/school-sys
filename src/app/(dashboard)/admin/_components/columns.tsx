@@ -18,12 +18,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { deleteUser } from "@/db/actions/user";
-import students from "@/db/schema/student";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import EditStudentForm from "../../_components/forms/student/EditStudentForm";
-import { teacher, user } from "@/db/schema";
 import { toast } from "sonner";
+import { getStudentType, getTeacherType } from "@/types";
+import EditTeacherForm from "../../_components/forms/teacher/EditTeacherForm";
 const handleDelete = async (id: string) => {
   const deleted = await deleteUser(id);
   if (deleted) {
@@ -32,9 +32,7 @@ const handleDelete = async (id: string) => {
     toast.error("Could not delete user");
   }
 };
-export const studentColumns: ColumnDef<
-  typeof students.$inferSelect & { user: typeof user.$inferSelect }
->[] = [
+export const studentColumns: ColumnDef<getStudentType>[] = [
   {
     accessorKey: "user.name",
     header: "Name",
@@ -72,7 +70,7 @@ export const studentColumns: ColumnDef<
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-red-500"
-                onClick={() => handleDelete(student.userId)}
+                onClick={() => handleDelete(student.user.id)}
               >
                 delete
               </DropdownMenuItem>
@@ -91,9 +89,7 @@ export const studentColumns: ColumnDef<
   },
 ];
 
-export const teacherColumns: ColumnDef<
-  typeof teacher.$inferSelect & { user: typeof user.$inferSelect }
->[] = [
+export const teacherColumns: ColumnDef<getTeacherType>[] = [
   {
     accessorKey: "user.name",
     header: "Name",
@@ -111,25 +107,36 @@ export const teacherColumns: ColumnDef<
     cell: ({ row }) => {
       const teacher = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-red-500"
-              onClick={() => handleDelete(teacher.userId)}
-            >
-              delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Dialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DialogTrigger asChild>
+                <DropdownMenuItem>Edit</DropdownMenuItem>
+              </DialogTrigger>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-red-500"
+                onClick={() => handleDelete(teacher.user.id)}
+              >
+                delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Update Teacher</DialogTitle>
+            </DialogHeader>
+            <DialogDescription></DialogDescription>
+            <EditTeacherForm data={teacher} />
+          </DialogContent>
+        </Dialog>
       );
     },
   },

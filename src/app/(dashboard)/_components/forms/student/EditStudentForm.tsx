@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { updateStudent } from "@/db/actions/student";
-import { updateStudentType } from "@/types";
+import { getStudentType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -22,7 +22,7 @@ const formSchema = z.object({
   email: z.string().email(),
 });
 
-const EditStudentForm = ({ data }: { data: updateStudentType }) => {
+const EditStudentForm = ({ data }: { data: getStudentType }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

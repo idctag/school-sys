@@ -7,6 +7,7 @@ import users from "../schema/user";
 import teachers from "../schema/teacher";
 import { createUser } from "./user";
 import { teacher, user } from "../schema";
+import { updateTeacherType } from "@/types";
 
 export const createTeacher = async (
   values: Omit<typeof teacher.$inferInsert, "userId"> &
@@ -38,12 +39,9 @@ export const getTeachers = async () => {
   return teachers;
 };
 
-export const updateTeacher = async (
-  id: string,
-  data: Omit<typeof teacher.$inferInsert, "userId"> & typeof user.$inferInsert,
-) => {
+export const updateTeacher = async (id: string, data: updateTeacherType) => {
   try {
-    const update = await db.query.student.findFirst({
+    const update = await db.query.teacher.findFirst({
       where: eq(teacher.id, id),
       with: { user: true },
     });
