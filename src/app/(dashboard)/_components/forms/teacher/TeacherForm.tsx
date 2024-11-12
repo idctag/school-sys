@@ -11,12 +11,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createTeacher } from "@/db/actions/teacher";
-import teachers from "@/db/schemas/teacher";
-import users from "@/db/schemas/user";
+import { insertTeacherType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -25,8 +25,6 @@ const formSchema = z.object({
   email: z.string().email(),
 });
 
-type insertTeacherType = typeof teachers.$inferInsert &
-  typeof users.$inferInsert;
 export const TeacherForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,8 +34,13 @@ export const TeacherForm = () => {
       lastName: "",
     },
   });
-  async function onSubmit(values: insertTeacherType) {
-    await createTeacher(values);
+  async function onSubmit(values: Omit<insertTeacherType, "userId">) {
+    const res = await createTeacher(values);
+    if (res) {
+      toast.success("Teacher has been created");
+    } else {
+      toast.error("Could not create Teacher");
+    }
   }
 
   const { isDirty, isValid, isSubmitting } = form.formState;

@@ -15,6 +15,10 @@ const teachers = pgTable("teacher", {
 });
 
 export const teacherRelations = relations(teachers, ({ one, many }) => ({
+  user: one(users, {
+    fields: [teachers.userId],
+    references: [users.id],
+  }),
   class: one(classes),
   lessons: many(lessons),
 }));

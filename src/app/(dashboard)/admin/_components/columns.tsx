@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
@@ -18,20 +19,32 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteUser } from "@/db/actions/user";
 import students from "@/db/schema/student";
-import users from "@/db/schema/user";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
-export const studentColumns: ColumnDef<typeof students.$inferSelect>[] = [
+import EditStudentForm from "../../_components/forms/student/EditStudentForm";
+import { teacher, user } from "@/db/schema";
+import { toast } from "sonner";
+const handleDelete = async (id: string) => {
+  const deleted = await deleteUser(id);
+  if (deleted) {
+    toast.warning("User Deleted");
+  } else {
+    toast.error("Could not delete user");
+  }
+};
+export const studentColumns: ColumnDef<
+  typeof students.$inferSelect & { user: typeof user.$inferSelect }
+>[] = [
   {
-    accessorKey: "users.name",
+    accessorKey: "user.name",
     header: "Name",
   },
   {
-    accessorKey: "users.lastName",
+    accessorKey: "user.lastName",
     header: "Last Name",
   },
   {
-    accessorKey: "users.email",
+    accessorKey: "user.email",
     header: "Email",
   },
   {
@@ -53,22 +66,24 @@ export const studentColumns: ColumnDef<typeof students.$inferSelect>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DialogTrigger>
+              <DialogTrigger asChild>
                 <DropdownMenuItem>Edit</DropdownMenuItem>
               </DialogTrigger>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-red-500"
-                onClick={() => deleteUser(student.userId)}
+                onClick={() => handleDelete(student.userId)}
               >
                 delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <DialogContent>
-            <DialogHeader>Update Student</DialogHeader>
+            <DialogHeader>
+              <DialogTitle>Update student</DialogTitle>
+            </DialogHeader>
             <DialogDescription></DialogDescription>
-            {/* <EditStudentForm /> */}
+            <EditStudentForm data={student} />
           </DialogContent>
         </Dialog>
       );
@@ -76,17 +91,19 @@ export const studentColumns: ColumnDef<typeof students.$inferSelect>[] = [
   },
 ];
 
-export const teacherColumns: ColumnDef<typeof users.$inferSelect>[] = [
+export const teacherColumns: ColumnDef<
+  typeof teacher.$inferSelect & { user: typeof user.$inferSelect }
+>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "user.name",
     header: "Name",
   },
   {
-    accessorKey: "lastName",
+    accessorKey: "user.lastName",
     header: "Last Name",
   },
   {
-    accessorKey: "email",
+    accessorKey: "user.email",
     header: "Email",
   },
   {
@@ -107,7 +124,7 @@ export const teacherColumns: ColumnDef<typeof users.$inferSelect>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-red-500"
-              onClick={() => deleteUser(teacher.id)}
+              onClick={() => handleDelete(teacher.userId)}
             >
               delete
             </DropdownMenuItem>

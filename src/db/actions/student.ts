@@ -3,17 +3,17 @@ import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "..";
 import { createUser } from "./user";
-import students from "../schema/student";
 import users from "../schema/user";
+import { student, user } from "../schema";
 
 export const createStudent = async (
-  values: Omit<typeof students.$inferInsert, "userId"> &
+  values: Omit<typeof student.$inferInsert, "userId"> &
     typeof users.$inferInsert,
 ) => {
   const newUser = await createUser({ ...values, role: "student" });
 
   try {
-    await db.insert(students).values({
+    await db.insert(student).values({
       ...values,
       userId: newUser.id,
     });
@@ -23,8 +23,12 @@ export const createStudent = async (
       error: e,
     };
   }
+  const newStudent = await db.query.student.findFirst({
+    where: eq(student.userId, newUser.id),
+  });
 
   revalidatePath("/");
+  return newStudent;
 };
 
 export const getStudents = async () => {
@@ -34,27 +38,36 @@ export const getStudents = async () => {
 
 export const getStudent = async (id: string) => {
   const data = await db.query.student.findFirst({
-    where: eq(students.id, id),
+    where: eq(student.id, id),
     with: { user: true },
   });
   return data;
 };
 
-// export const updateStudent = async (
-//   id: string,
-//   values: z.infer<typeof studentSchema>,
-// ) => {
-//   const student = await db.select().from(students).where(eq(students.id, id));
-//   const user = await db
-//     .select()
-//     .from(users)
-//     .where(eq(users.id, student[0].userId));
-//   try {
-//     await db.update(users).set(values).where(eq(users.id, user[0].id));
-//   } catch (e) {
-//     return {
-//       error: e,
-//     };
-//   }
-//   revalidatePath("/");
-// };
+export const updateStudent = async (
+  id: string,
+  data: Omit<typeof student.$inferInsert, "userId"> & typeof user.$inferInsert,
+) => {
+  try {
+    const update = await db.query.student.findFirst({
+      where: eq(student.id, id),
+      with: { user: true },
+    });
+    if (update) {
+      await db
+        .update(user)
+        .set({ ...data })
+        .where(eq(user.id, update.user.id));
+    }
+  } catch (err) {
+    return {
+      error: err,
+    };
+  }
+  const updatedData = await db.query.student.findFirst({
+    where: eq(student.id, id),
+    with: { user: true },
+  });
+  revalidatePath("/");
+  return updatedData;
+};

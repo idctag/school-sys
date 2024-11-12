@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -10,47 +8,38 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createStudent } from "@/db/actions/student";
-import { insertStudentType } from "@/types";
+import { updateTeacher } from "@/db/actions/teacher";
+import { updateTeacherType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
-  name: z.string().min(2),
-  lastName: z.string().min(2),
+  name: z.string().min(2).nullable(),
+  lastName: z.string().min(2).nullable(),
   email: z.string().email(),
 });
 
-export const StudentForm = () => {
+const EditTeacherForm = ({ data }: { data: updateTeacherType }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      name: "",
-      lastName: "",
+      ...data,
+      ...data.user,
     },
   });
-
-  async function onSubmit(values: Omit<insertStudentType, "userId">) {
-    const newStudent = await createStudent(values);
-    if (newStudent) {
-      toast.success("Student has been created");
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const res = await updateTeacher(data.id, values);
+    if (res) {
+      toast.success("Teacher has been updated");
     } else {
-      toast.error("Could not create student");
+      toast.error("Could not update teacher");
     }
   }
 
   const { isDirty, isValid, isSubmitting } = form.formState;
-
-  useEffect(() => {
-    if (form.formState.isSubmitSuccessful) {
-      form.reset();
-    }
-  }, [form.formState, form.reset, form]);
 
   return (
     <Form {...form}>
@@ -65,7 +54,11 @@ export const StudentForm = () => {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="name" {...field} />
+                <Input
+                  placeholder="name"
+                  {...field}
+                  value={field.value ?? ""}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -78,7 +71,11 @@ export const StudentForm = () => {
             <FormItem>
               <FormLabel>Last Name</FormLabel>
               <FormControl>
-                <Input placeholder="last name" {...field} />
+                <Input
+                  placeholder="last name"
+                  {...field}
+                  value={field.value ?? ""}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -98,9 +95,11 @@ export const StudentForm = () => {
           )}
         />
         <Button disabled={isSubmitting || !isValid || !isDirty} type="submit">
-          {isSubmitting ? <Loader2 className="animate-spin" /> : <>Add</>}
+          {isSubmitting ? <Loader2 className="animate-spin" /> : <>Update</>}
         </Button>
       </form>
     </Form>
   );
 };
+
+export default EditTeacherForm;

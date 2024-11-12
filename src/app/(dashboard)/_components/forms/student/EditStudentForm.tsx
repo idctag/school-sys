@@ -8,14 +8,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { student, user } from "@/db/schema";
+import { updateStudent } from "@/db/actions/student";
+import { updateStudentType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
-
-type insertStudentType = typeof student.$inferInsert & typeof user.$inferInsert;
 
 const formSchema = z.object({
   name: z.string().min(2).nullable(),
@@ -23,25 +22,25 @@ const formSchema = z.object({
   email: z.string().email(),
 });
 
-const EditStudentForm = ({ data }: { data: insertStudentType }) => {
+const EditStudentForm = ({ data }: { data: updateStudentType }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       ...data,
+      ...data.user,
     },
   });
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // await updateStudent(values.id, values);
-    console.log(values);
+    const res = await updateStudent(data.id, values);
+    if (res) {
+      toast.success("Student has been updated");
+    } else {
+      toast.error("Could not update student");
+    }
   }
 
   const { isDirty, isValid, isSubmitting } = form.formState;
-
-  useEffect(() => {
-    if (form.formState.isSubmitSuccessful) {
-      form.reset();
-    }
-  }, [form.formState, form.reset, form]);
 
   return (
     <Form {...form}>

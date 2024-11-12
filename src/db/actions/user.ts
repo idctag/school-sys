@@ -2,25 +2,25 @@
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { db } from "..";
-import users from "../schema/user";
+import { user } from "../schema";
 
 export const deleteUser = async (id: string) => {
-  const student = await db.delete(users).where(eq(users.id, id));
+  const deleted = await db.delete(user).where(eq(user.id, id)).returning();
   revalidatePath("/");
-  return JSON.stringify(student);
+  return deleted;
 };
 
 export const createUser = async (
-  values: typeof users.$inferInsert,
-): Promise<typeof users.$inferSelect> => {
+  values: typeof user.$inferInsert,
+): Promise<typeof user.$inferSelect> => {
   try {
-    await db.insert(users).values(values);
+    await db.insert(user).values(values);
   } catch (e) {
     throw new Error(`${e}`);
   }
 
   const newUser = await db.query.user.findFirst({
-    where: eq(users.email, values.email),
+    where: eq(user.email, values.email),
   });
 
   if (!newUser) {

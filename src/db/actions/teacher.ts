@@ -5,41 +5,63 @@ import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import users from "../schema/user";
 import teachers from "../schema/teacher";
+import { createUser } from "./user";
+import { teacher, user } from "../schema";
 
 export const createTeacher = async (
-  values: typeof users.$inferInsert & typeof teachers.$inferInsert,
+  values: Omit<typeof teacher.$inferInsert, "userId"> &
+    typeof user.$inferInsert,
 ) => {
-  const newUser = await db
-    .insert(users)
-    .values({ ...values, role: "teacher" })
-    .returning();
-  if (!newUser) {
-    throw new Error("failed to create user");
-  }
+  const newUser = await createUser({ ...values, role: "teacher" });
 
   try {
     await db.insert(teachers).values({
-      userId: newUser[0].id,
+      userId: newUser.id,
     });
   } catch (e) {
-    await db.delete(users).where(eq(users.id, newUser[0].id));
+    await db.delete(users).where(eq(users.id, newUser.id));
     return {
       error: e,
     };
   }
-  const student = db
-    .select()
-    .from(teachers)
-    .where(eq(teachers.userId, newUser[0].id));
+
+  const newTeacher = await db.query.teacher.findFirst({
+    where: eq(teacher.userId, newUser.id),
+  });
 
   revalidatePath("/");
-  return student;
+  return newTeacher;
 };
 
 export const getTeachers = async () => {
-  const teachers = await db
-    .select()
-    .from(users)
-    .where(eq(users.role, "teacher"));
+  const teachers = await db.query.teacher.findMany({ with: { user: true } });
   return teachers;
+};
+
+export const updateTeacher = async (
+  id: string,
+  data: Omit<typeof teacher.$inferInsert, "userId"> & typeof user.$inferInsert,
+) => {
+  try {
+    const update = await db.query.student.findFirst({
+      where: eq(teacher.id, id),
+      with: { user: true },
+    });
+    if (update) {
+      await db
+        .update(user)
+        .set({ ...data })
+        .where(eq(user.id, update.user.id));
+    }
+  } catch (err) {
+    return {
+      error: err,
+    };
+  }
+  const updatedData = await db.query.teacher.findFirst({
+    where: eq(teacher.id, id),
+    with: { user: true },
+  });
+  revalidatePath("/");
+  return updatedData;
 };
