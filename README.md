@@ -6,6 +6,11 @@
 6.  [x] Student update form
 7.  [x] Finalize schema
 8.  [x] ref, action pending state
-9.  [ ] teacher form update
-10. [ ] student edit
-11. [ ] teacher edit
+9.  [x] teacher form update
+10. [x] student edit
+11. [x] teacher edit
+12. [x] reform user actions
+13. [x] unify user forms
+14. [x] seed db
+15. [x] admin page better listing
+16. [ ] better pagination

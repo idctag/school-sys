@@ -22,3 +22,20 @@ export type getStudentType = typeof student.$inferSelect & {
 
 export type updateStudentType = Omit<typeof student.$inferSelect, "userId"> &
   typeof user.$inferSelect;
+
+// USER
+
+export type createUserType = {
+  user: typeof user.$inferInsert;
+  student?: typeof student.$inferInsert;
+  teacher?: typeof teacher.$inferInsert;
+};
+
+export type getUserType = typeof user.$inferSelect & {
+  student: typeof student.$inferSelect;
+  teacher: typeof teacher.$inferSelect;
+};
+
+export type updateUserType = typeof user.$inferInsert &
+  typeof student.$inferInsert &
+  typeof teacher.$inferInsert;
