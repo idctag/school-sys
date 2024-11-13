@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { db } from "..";
 import { student, teacher, user } from "../schema";
-import { createUserType, getUserType } from "@/types";
+import { insertUserType } from "@/types";
 
 export const getUsers = async () => {
   const res = await db.query.user.findMany({
@@ -25,34 +25,7 @@ export const deleteUser = async (id: string) => {
   }
 };
 
-export const updateUser = async (id: string, data: getUserType) => {
-  try {
-    await db.transaction(async (tx) => {
-      await tx
-        .update(user)
-        .set({ ...data })
-        .where(eq(user.id, id));
-      await tx
-        .update(student)
-        .set({ ...data })
-        .where(eq(student.userId, id));
-      await tx
-        .update(teacher)
-        .set({ ...data })
-        .where(eq(teacher.userId, id));
-    });
-  } catch (e) {
-    throw new Error(`${e}`);
-  }
-  const updatedUser = await db.query.user.findFirst({
-    where: eq(user.id, id),
-    with: { student: true, teacher: true },
-  });
-
-  return updatedUser;
-};
-
-export const createUser = async (values: createUserType) => {
+export const createUser = async (values: insertUserType) => {
   try {
     const newUser = await db.insert(user).values(values.user).returning();
     switch (values.user.role) {
@@ -83,4 +56,19 @@ export const createUser = async (values: createUserType) => {
   }
 
   return newUser;
+};
+export const updateUser = async (id: string, data: insertUserType) => {
+  try {
+    await db.update(user).set(data.user).where(eq(user.id, id));
+    if (data.student) {
+      await db.update(student).set(data.student).where(eq(student.userId, id));
+    }
+    if (data.teacher) {
+      await db.update(teacher).set(data.teacher).where(eq(teacher.userId, id));
+    }
+    revalidatePath("/");
+    return { status: true };
+  } catch (err) {
+    return { status: false, message: err };
+  }
 };

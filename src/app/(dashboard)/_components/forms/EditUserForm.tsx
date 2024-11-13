@@ -8,31 +8,36 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { updateUser } from "@/db/actions/user";
+import { user } from "@/db/schema";
 import { getUserType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { createSelectSchema } from "drizzle-zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-const formSchema = z.object({
-  name: z.string().min(2).nullable(),
-  lastName: z.string().min(2).nullable(),
+const userSchema = createSelectSchema(user, {
   email: z.string().email(),
+});
+
+const formSchema = z.object({
+  user: userSchema,
 });
 
 const EditUserForm = ({ data }: { data: getUserType }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ...data,
+      user: data,
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const res = await updateUser(data.id, values);
-    if (res) {
-      toast.success("Student has been updated");
+    if (res.status) {
+      toast.success(`User has been updated`);
     } else {
       toast.error("Could not update student");
     }
@@ -48,7 +53,7 @@ const EditUserForm = ({ data }: { data: getUserType }) => {
       >
         <FormField
           control={form.control}
-          name="name"
+          name="user.name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
@@ -65,7 +70,7 @@ const EditUserForm = ({ data }: { data: getUserType }) => {
         />
         <FormField
           control={form.control}
-          name="lastName"
+          name="user.lastName"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Last Name</FormLabel>
@@ -82,7 +87,7 @@ const EditUserForm = ({ data }: { data: getUserType }) => {
         />
         <FormField
           control={form.control}
-          name="email"
+          name="user.email"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>

@@ -23,6 +23,7 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { getUserType } from "@/types";
+import EditUserForm from "../../_components/forms/EditUserForm";
 
 const handleDelete = async (id: string) => {
   const res = await deleteUser(id);
@@ -96,7 +97,7 @@ export const userColumns: ColumnDef<getUserType>[] = [
               <DialogTitle>Update {user.name}</DialogTitle>
             </DialogHeader>
             <DialogDescription></DialogDescription>
-            {/* <RoleSpecificForm user={user} /> */}
+            <EditUserForm data={user} />
           </DialogContent>
         </Dialog>
       );

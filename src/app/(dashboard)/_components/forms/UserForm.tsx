@@ -47,8 +47,8 @@ export function UserForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const newUser = await createUser(values);
-    if (newUser) {
+    const res = await createUser(values);
+    if (res) {
       toast.success("User has been created");
     } else {
       toast.error("Could not create User");
