@@ -24,6 +24,17 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { getUserType } from "@/types";
 import EditUserForm from "../../_components/forms/EditUserForm";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const handleDelete = async (id: string) => {
   const res = await deleteUser(id);
@@ -71,34 +82,50 @@ export const userColumns: ColumnDef<getUserType>[] = [
       const user = row.original;
       return (
         <Dialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DialogTrigger asChild>
-                <DropdownMenuItem>Edit</DropdownMenuItem>
-              </DialogTrigger>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-red-500"
-                onClick={() => handleDelete(user.id)}
-              >
-                delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Update {user.name}</DialogTitle>
-            </DialogHeader>
-            <DialogDescription></DialogDescription>
-            <EditUserForm data={user} />
-          </DialogContent>
+          <AlertDialog>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DialogTrigger asChild>
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                </DialogTrigger>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <AlertDialogTrigger className="text-red-500 w-full">
+                    delete
+                  </AlertDialogTrigger>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Update {user.name}</DialogTitle>
+              </DialogHeader>
+              <DialogDescription></DialogDescription>
+              <EditUserForm data={user} />
+            </DialogContent>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your account and remove your data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => handleDelete(user.id)}>
+                  Confirm
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </Dialog>
       );
     },
