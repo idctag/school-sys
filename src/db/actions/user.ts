@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { db } from "..";
 import { student, teacher, user } from "../schema";
-import { insertUserType } from "@/types";
+import { insertUserType } from "../../../types/userTypes";
 
 export const getUsers = async () => {
   const res = await db.query.user.findMany({

@@ -13,4 +13,5 @@
 13. [x] unify user forms
 14. [x] seed db
 15. [x] admin page better listing
-16. [ ] better pagination
+16. [x] better pagination
+17. [ ] other tables seed

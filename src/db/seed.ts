@@ -15,7 +15,8 @@ async function main() {
   ]) {
     await db.delete(table);
   }
-  seeds.student();
+  await seeds.student();
+  await seeds.teacher();
 }
 
 main();

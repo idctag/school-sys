@@ -10,13 +10,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { updateUser } from "@/db/actions/user";
 import { user } from "@/db/schema";
-import { getUserType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createSelectSchema } from "drizzle-zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { getUserType } from "../../../../../types/userTypes";
 
 const userSchema = createSelectSchema(user, {
   email: z.string().email(),
