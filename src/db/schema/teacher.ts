@@ -19,7 +19,7 @@ export const teacherRelations = relations(teachers, ({ one, many }) => ({
     fields: [teachers.userId],
     references: [users.id],
   }),
-  class: one(classes),
+  class: many(classes),
   lessons: many(lessons),
 }));
 

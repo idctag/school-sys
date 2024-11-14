@@ -9,6 +9,7 @@
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx src/db/seed.ts"
   },
@@ -54,6 +55,7 @@
     "@types/pg": "^8.11.10",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "dayjs": "^1.11.13",
     "drizzle-kit": "^0.27.2",
     "eslint": "^8",
     "eslint-config-next": "15.0.1",

@@ -5,8 +5,4 @@ export { default as session } from "./session";
 export { default as student, studentRelations } from "./student";
 export { default as teacher, teacherRelations } from "./teacher";
 export { default as user, usersRelations } from "./user";
-export { default as class, classRelations } from "./class";
-export {
-  default as studentsToLesssion,
-  studentsToLessonsRelations,
-} from "./students_to_lesson";
+export { default as classes, classRelations } from "./class";

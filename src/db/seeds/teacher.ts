@@ -3,14 +3,18 @@ import { db } from "..";
 import { teacher, user } from "../schema";
 import { insertUserType } from "../../../types/userTypes";
 
-const users: insertUserType[] = generateUsers(20);
+const users: insertUserType[] = generateUsers(12);
 
 export default async function seed() {
-  users.map(async (current) => {
-    const newUser = await db
-      .insert(user)
-      .values({ ...current.user, role: "teacher" })
-      .returning();
-    await db.insert(teacher).values({ ...current, userId: newUser[0].id });
-  });
+  await Promise.all(
+    users.map(async (current) => {
+      const newUser = await db
+        .insert(user)
+        .values({ ...current.user, role: "teacher" })
+        .returning();
+      await db
+        .insert(teacher)
+        .values({ ...current.teacher, userId: newUser[0].id });
+    }),
+  );
 }

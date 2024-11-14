@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
-import { date, pgTable, text } from "drizzle-orm/pg-core";
+import { pgTable, text } from "drizzle-orm/pg-core";
 import teachers from "./teacher";
-import studentsToLessons from "./students_to_lesson";
+import classes from "./class";
 
 const lessons = pgTable("lesson", {
   id: text("id")
@@ -9,16 +9,21 @@ const lessons = pgTable("lesson", {
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
   teacherId: text("teacherId").references(() => teachers.id),
-  start: date("start").notNull(),
-  end: date("end").notNull(),
+  classId: text("classId").references(() => classes.id),
+  day: text("day").notNull(),
+  start: text("start").notNull(),
+  end: text("end").notNull(),
 });
 
-export const lessonRelations = relations(lessons, ({ one, many }) => ({
+export const lessonRelations = relations(lessons, ({ one }) => ({
   teacher: one(teachers, {
     fields: [lessons.teacherId],
     references: [teachers.id],
   }),
-  studentsToLessons: many(studentsToLessons),
+  class: one(classes, {
+    fields: [lessons.classId],
+    references: [classes.id],
+  }),
 }));
 
 export default lessons;
