@@ -43,19 +43,10 @@ export const createUser = async (values: insertUserType) => {
       await db.update(teacher).set(values.teacher);
     }
     revalidatePath("/");
-  } catch (e) {
-    throw new Error(`${e}`);
+    return { status: true };
+  } catch (err) {
+    return { status: false, message: err };
   }
-
-  const newUser = await db.query.user.findFirst({
-    where: eq(user.email, values.user.email),
-  });
-
-  if (!newUser) {
-    throw new Error("failed to create user");
-  }
-
-  return newUser;
 };
 export const updateUser = async (id: string, data: insertUserType) => {
   try {

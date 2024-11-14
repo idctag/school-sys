@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
 import { UserForm } from "../../_components/forms/UserForm";
+import { DataTablePagination } from "./table-pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -62,7 +63,7 @@ export function DataTable<TData, TValue>({
       <div>
         <div className="flex items-center py-4 justify-between">
           <Input
-            placeholder="Filter emails..."
+            placeholder="Search users..."
             onChange={(event) =>
               table.setGlobalFilter(String(event.target.value))
             }
@@ -125,23 +126,8 @@ export function DataTable<TData, TValue>({
             </TableBody>
           </Table>
         </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
+        <div className="pt-4">
+          <DataTablePagination table={table} />
         </div>
       </div>
       <DialogContent>

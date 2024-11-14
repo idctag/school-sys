@@ -48,10 +48,10 @@ export function UserForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const res = await createUser(values);
-    if (res) {
+    if (res.status) {
       toast.success("User has been created");
     } else {
-      toast.error("Could not create User");
+      toast.error(`${res.message}`);
     }
   }
   const { isDirty, isValid, isSubmitting } = form.formState;
