@@ -14,4 +14,6 @@
 14. [x] seed db
 15. [x] admin page better listing
 16. [x] better pagination
-17. [ ] other tables seed
+17. [x] other tables seed
+18. [ ]
+19. [ ]

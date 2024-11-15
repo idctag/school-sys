@@ -31,8 +31,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
-import { UserForm } from "../../_components/forms/UserForm";
 import { DataTablePagination } from "./table-pagination";
+import { UserForm } from "@/app/(dashboard)/_components/forms/UserForm";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

@@ -22,7 +22,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-import EditUserForm from "../../_components/forms/EditUserForm";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,7 +33,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { getUserType } from "../../../../../types/userTypes";
+import { getUserType } from "../../../../../../types/userTypes";
+import EditUserForm from "@/app/(dashboard)/_components/forms/EditUserForm";
 
 const handleDelete = async (id: string) => {
   const res = await deleteUser(id);

@@ -6,7 +6,9 @@ const StudentDashboard = async () => {
   if (session && session.user.role != "student") {
     redirect(`/${session.user.role}`);
   }
-  return <div>StudentDashboard</div>;
+  return (
+    <div className="p-4 gap-4 flex flex-col xl:flex-row">StudentDashboard</div>
+  );
 };
 
 export default StudentDashboard;

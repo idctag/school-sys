@@ -1,5 +1,5 @@
 "use client";
-import { Book, Calendar, Component, University } from "lucide-react";
+import { Book, Calendar, Component, University, User } from "lucide-react";
 
 import {
   Sidebar,
@@ -17,6 +17,13 @@ import { SignOut } from "./signout-button";
 import { useSession } from "next-auth/react";
 
 const items = {
+  administration: [
+    {
+      title: "Users",
+      url: "/list/users",
+      icon: User,
+    },
+  ],
   academic: [
     {
       title: "Classes",
@@ -53,6 +60,21 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Administration</SidebarGroupLabel>
+          <SidebarMenu>
+            {items.administration.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton asChild>
+                  <Link href={item.url}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Academic</SidebarGroupLabel>
           <SidebarMenu>
