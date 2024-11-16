@@ -6,3 +6,5 @@ export { default as student, studentRelations } from "./student";
 export { default as teacher, teacherRelations } from "./teacher";
 export { default as user, usersRelations } from "./user";
 export { default as classes, classRelations } from "./class";
+export { default as attendance, attendanceRelations } from "./attendance";
+export { default as event, eventRelations } from "./event";

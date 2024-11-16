@@ -18,5 +18,6 @@ export const generateUser = (): insertUserType => {
 };
 
 export const generateUsers = (amount: number) => {
-  return Array.from({ length: amount }, generateUser);
+  const data = Array.from({ length: amount }, generateUser);
+  return data;
 };
